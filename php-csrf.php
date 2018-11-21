@@ -1,6 +1,6 @@
 <?php
 /**
- * php-csrf v1.0.0
+ * php-csrf v1.0.1
  * 
  * Single PHP library file for protection over Cross-Site Request Forgery
  * Easily generate and manage CSRF tokens in groups.
@@ -48,15 +48,25 @@ class CSRF {
 	private $name;
 	private $hashes;
 	private $hashTime2Live;
+	private $hashSize;
 	private $inputName;
 
-	function __construct ($name='awesome', $hashTime2Live=0) {
+	/**
+	 * Initialize a CSRF instance
+	 * @param string  $session_name  Session name
+	 * @param string  $input_name     Form name
+	 * @param integer $hashTime2Live Default seconds hash before expiration
+	 * @param integer $hashSize      Default hash size in chars
+	 */
+	function __construct ($session_name='csrf-lib', $input_name='key-awesome', $hashTime2Live=0, $hashSize=64) {
 		// Session mods
-		$this->name = 'csrf-' . $name;
+		$this->name = $session_name;
 		// Form input name
-		$this->inputName = 'key-' . $name;
+		$this->inputName = $input_name;
 		// Default time before expire for hashes
 		$this->hashTime2Live = $hashTime2Live;
+		// Default hash size
+		$this->hashSize = $hashSize;
 		// Load hash list
 		$this->_load();
 	}
@@ -67,11 +77,11 @@ class CSRF {
 	 * @param  integer $time2Live Seconds before expiration
 	 * @return CSRF_Hash
 	 */
-	private function generateHash ($context = '', $time2Live=-1, $max_hashes=5) {
+	private function generateHash ($context='', $time2Live=-1, $max_hashes=5) {
 		// If no time2live (or invalid) use default
 		if ($time2Live < 0) $time2Live = $this->hashTime2Live;
 		// Generate new hash
-		$hash = new CSRF_Hash($context, $time2Live);
+		$hash = new CSRF_Hash($context, $time2Live, $this->hashSize);
 		// Save it
 		array_push($this->hashes, $hash);
 		if ($this->clearHashes($context, $max_hashes) == 0) {
@@ -88,12 +98,12 @@ class CSRF {
 	 * @param  integer $max_hashes ignore first x hashes
 	 * @return integer             number of deleted hashes
 	 */
-	public function clearHashes ($context = '', $max_hashes=0) {
+	public function clearHashes ($context='', $max_hashes=0) {
 		$ignore = $max_hashes;
 		$deleted = 0;
 		// Check in the hash list
 		for ($i = count($this->hashes) - 1; $i >= 0; $i--) {
-			if ($this->hashes[$i]->inContext($context) && --$ignore <= 0) {
+			if ($this->hashes[$i]->inContext($context) && $ignore-- <= 0) {
 				array_splice($this->hashes, $i, 1);
 				$deleted++;
 			}
@@ -109,7 +119,7 @@ class CSRF {
 	 * @param  string  $context   Name of the form
 	 * @param  integer $time2Live Seconds before expire
 	 */
-	public function input ($context = '', $time2Live=-1, $max_hashes=5) {
+	public function input ($context='', $time2Live=-1, $max_hashes=5) {
 		// Generate hash
 		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
 		// Generate html input string
@@ -121,7 +131,7 @@ class CSRF {
 	 * @param  string $context Name of the form
 	 * @return boolean         Valid or not
 	 */
-	public function validate ($context = '', $hash = null) {
+	public function validate ($context='', $hash = null) {
 		// If hash was not given, find hash
 		if (is_null($hash)) {
 			if (isset($_POST[$this->inputName])) {
