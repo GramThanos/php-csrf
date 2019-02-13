@@ -1,5 +1,6 @@
 ![latest release](https://img.shields.io/badge/Version-1.0.1-green.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/PHP->=5.3.0-blue.svg?style=flat-square)
+![latest release](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)
 
 # PHP-CSRF
 ### Cross-Site Request Forgery protection PHP library
