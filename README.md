@@ -89,7 +89,7 @@ ___
 ## About the Security
 
 This library uses the [openssl_random_pseudo_bytes](http://php.net/manual/en/function.openssl-random-pseudo-bytes.php) function to generate random hashes.
-In order to be sure that your system produce produce cryptographically strong hashes, you should run the following PHP code and check the result.
+In order to be sure that your system can produce cryptographically strong hashes, you should run the following PHP code and check the result.
 
 ```php
 <?php
