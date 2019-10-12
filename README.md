@@ -11,6 +11,13 @@ PHP-CSRF manage, produce and validate hashes on the user's session to provide a 
 ___
 
 
+## Download
+ - Direct download [php-csrf.php](https://raw.githubusercontent.com/GramThanos/php-csrf/master/php-csrf.php) file (right click save as).
+ - Using wget `wget -O php-csrf.php https://raw.githubusercontent.com/GramThanos/php-csrf/master/php-csrf.php`
+
+___
+
+
 ## Example usage
 
 ```php
@@ -121,7 +128,7 @@ ___
 This project is under [The MIT license](https://opensource.org/licenses/MIT).
 I do although appreciate attribute.
 
-Copyright (c) 2018 Grammatopoulos Athanasios-Vasileios
+Copyright (c) 2019 Grammatopoulos Athanasios-Vasileios
 
 ___
 
