@@ -1,4 +1,4 @@
-![latest release](https://img.shields.io/badge/Version-1.0.1-green.svg?style=flat-square)
+![latest release](https://img.shields.io/badge/Version-1.0.2-green.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/PHP->=5.3.0-blue.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)
 
@@ -72,12 +72,37 @@ Clear excess hashes
     - returns the number of deleted hashes.
 
 
-Generate HTML input code
+Generate HTML input element code
  - `echo $csrf->input($context='', $time2Live=-1, $max_hashes=5)`
     - `$context` the name of the group to save the hash to. Usually, it is different for each form.
     - `$time2Live` the hash live time in seconds. If zero, the hash will not expire. If negative, the default value will be used.
     - `$max_hashes` the hash limit of the group. If the group has already reached this limit, the oldest hash will be discarded.
     - returns a string with the HTML code. Example return value `'<input type="hidden" name="key-awesome" value="1234567890ABCDEF1234567890ABCDEF"/>'`.
+
+Generate javascript script element code (alternative)
+ - `echo $csrf->script($context='', $name='', $declaration='var', $time2Live=-1, $max_hashes=5)`
+    - `$context` the name of the group to save the hash to. Usually, it is different for each form.
+    - `$name` the name of the javascript variable. If it is empty string, the name of the `input_name` will be used, but the default one is an invalid variable name.
+    - `$declaration` the declaration key word of the variable, usually `var`, `let` or `const`.
+    - `$time2Live` the hash live time in seconds. If zero, the hash will not expire. If negative, the default value will be used.
+    - `$max_hashes` the hash limit of the group. If the group has already reached this limit, the oldest hash will be discarded.
+    - returns a string with the HTML script code. Example return value `'<script type="text/javascript">var name = "1234567890ABCDEF1234567890ABCDEF";</script>'`.
+
+Generate javascript variable code (alternative)
+ - `echo $csrf->javascript($context='', $name='', $declaration='var', $time2Live=-1, $max_hashes=5)`
+    - `$context` the name of the group to save the hash to. Usually, it is different for each form.
+    - `$name` the name of the javascript variable. If it is empty string, the name of the `input_name` will be used, but the default one is an invalid variable name.
+    - `$declaration` the declaration key word of the variable, usually `var`, `let` or `const`.
+    - `$time2Live` the hash live time in seconds. If zero, the hash will not expire. If negative, the default value will be used.
+    - `$max_hashes` the hash limit of the group. If the group has already reached this limit, the oldest hash will be discarded.
+    - returns a string with the javascript code. Example return value `'var name = "1234567890ABCDEF1234567890ABCDEF";'`.
+
+Generate hash as a string (alternative)
+ - `echo $csrf->string($context='', $time2Live=-1, $max_hashes=5)`
+    - `$context` the name of the group to save the hash to. Usually, it is different for each form.
+    - `$time2Live` the hash live time in seconds. If zero, the hash will not expire. If negative, the default value will be used.
+    - `$max_hashes` the hash limit of the group. If the group has already reached this limit, the oldest hash will be discarded.
+    - returns a string with the hash. Example return value `'1234567890ABCDEF1234567890ABCDEF'`.
 
 
 Check if a valid hash was posted
@@ -85,6 +110,13 @@ Check if a valid hash was posted
     - `$context` the name of the group to search for the hash into.
     - `$hash` the hash to validate. If `null`, the hash will be retrieved by the `$_POST` or the `$_GET` objects.
     - returns `true` if the validation was successful or `false` otherwise.
+
+
+Get the hashes of a context
+ - `$is_valid = $csrf->getHashes($context='', $max_hashes=-1)`
+    - `$context` the name of the group to get its hashes.
+    - `$max_hashes` max number of hashes to get. If negative value, all the hashes will be returned.
+    - returns an array of string hashes.
 
 
 The hashes are saved on the `$_SESSION` under the a single variable using `serialize` and `unserialize`. Thus, if the session expires or get destroyed, the hashes would too.
