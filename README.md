@@ -5,7 +5,7 @@
 # PHP-CSRF
 ### Cross-Site Request Forgery protection PHP library
 
-PHP-CSRF manage, produce and validate hashes on the user's session to provide a basic protection from cross-site request forgery.
+PHP-CSRF manage, generate and validate hashes, on the user's session, to provide a basic protection from Cross-Site Request Forgery.
 
 
 ___
@@ -147,7 +147,7 @@ In order to be sure that your system can produce cryptographically strong hashes
 </html>
 ```
 
-This library was created to provide a basic protection from cross-site request forgery. Thus, sophisticated attacks like a timing attack may break the protection.
+This library was created to provide a basic protection from Cross-Site Request Forgery attacks. Thus, sophisticated attacks like a timing attack may break the protection.
 
 By using relative big hash sizes, relative short hash expiration times and small group hash limits, you can strengthen the security.
 
@@ -160,7 +160,7 @@ ___
 This project is under [The MIT license](https://opensource.org/licenses/MIT).
 I do although appreciate attribute.
 
-Copyright (c) 2019 Grammatopoulos Athanasios-Vasileios
+Copyright (c) 2020 Grammatopoulos Athanasios Vasileios
 
 ___
 
