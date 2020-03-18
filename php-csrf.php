@@ -1,6 +1,6 @@
 <?php
 /**
- * php-csrf v1.0.2
+ * php-csrf v1.0.3
  * 
  * Single PHP library file for protection over Cross-Site Request Forgery
  * Easily generate and manage CSRF tokens in groups.
@@ -85,7 +85,7 @@ class CSRF {
 		$hash = new CSRF_Hash($context, $time2Live, $this->hashSize);
 		// Save it
 		array_push($this->hashes, $hash);
-		if ($this->clearHashes($context, $max_hashes) == 0) {
+		if ($this->clearHashes($context, $max_hashes) === 0) {
 			$this->_save();
 		}
 
@@ -160,7 +160,7 @@ class CSRF {
 		// Generate hash
 		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
 		// Variable name
-		if (strlen($name) == 0) {
+		if (strlen($name) === 0) {
 			$name = $this->inputName;
 		}
 		// Generate html input string
@@ -179,7 +179,7 @@ class CSRF {
 		// Generate hash
 		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
 		// Variable name
-		if (strlen($name) == 0) {
+		if (strlen($name) === 0) {
 			$name = $this->inputName;
 		}
 		// Generate html input string
@@ -302,7 +302,7 @@ class CSRF_Hash {
 	 * @return boolean
 	 */
 	public function hasExpire () {
-		if ($this->expire == 0 || $this->expire > time()) {
+		if ($this->expire === 0 || $this->expire > time()) {
 			return false;
 		}
 		return true;
@@ -313,7 +313,7 @@ class CSRF_Hash {
 	 * @return boolean
 	 */
 	public function verify ($hash, $context='') {
-		if (strcmp($context, $this->context) == 0 && !$this->hasExpire() && strcmp($hash, $this->hash) == 0) {
+		if (strcmp($context, $this->context) === 0 && !$this->hasExpire() && strcmp($hash, $this->hash) === 0) {
 			return true;
 		}
 		return false;
@@ -324,7 +324,7 @@ class CSRF_Hash {
 	 * @return boolean
 	 */
 	public function inContext ($context='') {
-		if (strcmp($context, $this->context) == 0) {
+		if (strcmp($context, $this->context) === 0) {
 			return true;
 		}
 		return false;
