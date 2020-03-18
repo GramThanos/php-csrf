@@ -1,4 +1,4 @@
-![latest release](https://img.shields.io/badge/Version-1.0.2-green.svg?style=flat-square)
+![latest release](https://img.shields.io/badge/Version-1.0.3-green.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/PHP->=5.3.0-blue.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)
 
