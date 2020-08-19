@@ -29,6 +29,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
+ * @tags
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+ * @phpcs:disable Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine
+ * @phpcs:disable PSR2.Classes.ClassDeclaration.OpenBraceNewLine
  */
 
 namespace PHPCSRFLib;
