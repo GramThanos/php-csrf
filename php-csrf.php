@@ -1,7 +1,7 @@
 <?php
 /**
- * php-csrf v1.0.3
- * 
+ * php-csrf v1.1.0-dev
+ *
  * Single PHP library file for protection over Cross-Site Request Forgery
  * Easily generate and manage CSRF tokens in groups.
  *
