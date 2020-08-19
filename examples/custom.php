@@ -6,6 +6,7 @@
     session_start();
 
     // Initialize an instance
+    use PHPCSRFLib\CSRF;
     $csrf = new CSRF(
         'session-hashes',   // Save hashes on $_SESSION['session-hashes']
         'hidden-key',       // Print the form input with the name 'hidden-key'

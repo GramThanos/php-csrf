@@ -31,6 +31,8 @@
  *
  */
 
+namespace PHPCSRFLib;
+
 /**
  * Usage:
  *      // Load or Start a new list of tokens

@@ -6,6 +6,7 @@
     session_start();
 
     // Initialize an instance
+    use PHPCSRFLib\CSRF;
     $csrf = new CSRF();
 
     $message = false;
