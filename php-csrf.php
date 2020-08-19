@@ -1,11 +1,12 @@
 <?php
+
 /**
  * php-csrf v1.1.0-dev
  *
  * Single PHP library file for protection over Cross-Site Request Forgery
  * Easily generate and manage CSRF tokens in groups.
  *
- * 
+ *
  * MIT License
  *
  * Copyright (c) 2020 Grammatopoulos Athanasios-Vasileios
@@ -47,46 +48,48 @@ class CSRF {
 
 	private $name;
 	private $hashes;
-	private $hashTime2Live;
+	private $hashTTL;
 	private $hashSize;
 	private $inputName;
 
 	/**
 	 * Initialize a CSRF instance
 	 * @param string  $session_name  Session name
-	 * @param string  $input_name     Form name
-	 * @param integer $hashTime2Live Default seconds hash before expiration
+	 * @param string  $input_name    Form name
+	 * @param integer $hashTTL       Default seconds hash before expiration
 	 * @param integer $hashSize      Default hash size in chars
 	 */
-	function __construct ($session_name='csrf-lib', $input_name='key-awesome', $hashTime2Live=0, $hashSize=64) {
+	public function __construct($session_name = 'default', $input_name = 'key-awesome', $hashTTL = 0, $hashSize = 64) {
 		// Session mods
 		$this->name = $session_name;
 		// Form input name
 		$this->inputName = $input_name;
 		// Default time before expire for hashes
-		$this->hashTime2Live = $hashTime2Live;
+		$this->hashTTL = $hashTTL;
 		// Default hash size
 		$this->hashSize = $hashSize;
 		// Load hash list
-		$this->_load();
+		$this->load();
 	}
 
 	/**
-	 * Generate a CSRF_Hash
+	 * Generate a CSRFHash
 	 * @param  string  $context    Name of the form
-	 * @param  integer $time2Live  Seconds before expiration
+	 * @param  integer $ttl        Seconds before expiration
 	 * @param  integer $max_hashes Clear old context hashes if more than this number
-	 * @return CSRF_Hash
+	 * @return CSRFHash
 	 */
-	private function generateHash ($context='', $time2Live=-1, $max_hashes=5) {
-		// If no time2live (or invalid) use default
-		if ($time2Live < 0) $time2Live = $this->hashTime2Live;
+	private function generateHash($context = '', $ttl = -1, $max_hashes = 5) {
+		// If no time to live (or invalid) use default
+		if ($ttl < 0) {
+			$ttl = $this->hashTTL;
+		}
 		// Generate new hash
-		$hash = new CSRF_Hash($context, $time2Live, $this->hashSize);
+		$hash = new CSRFHash($context, $ttl, $this->hashSize);
 		// Save it
 		array_push($this->hashes, $hash);
 		if ($this->clearHashes($context, $max_hashes) === 0) {
-			$this->_save();
+			$this->save();
 		}
 
 		// Return hash info
@@ -99,7 +102,7 @@ class CSRF {
 	 * @param  integer $max_hashes max hashes to get
 	 * @return array               array of hashes as strings
 	 */
-	public function getHashes ($context='', $max_hashes=-1) {
+	public function getHashes($context = '', $max_hashes = -1) {
 		$len = count($this->hashes);
 		$hashes = array();
 		// Check in the hash list
@@ -118,7 +121,7 @@ class CSRF {
 	 * @param  integer $max_hashes ignore first x hashes
 	 * @return integer             number of deleted hashes
 	 */
-	public function clearHashes ($context='', $max_hashes=0) {
+	public function clearHashes($context = '', $max_hashes = 0) {
 		$ignore = $max_hashes;
 		$deleted = 0;
 		// Check in the hash list
@@ -129,92 +132,98 @@ class CSRF {
 			}
 		}
 		if ($deleted > 0) {
-			$this->_save();
+			$this->save();
 		}
 		return $deleted;
 	}
 
 	/**
-	 * Generate an input html element
-	 * @param  string  $context   Name of the form
-	 * @param  integer $time2Live Seconds before expire
+	 * Generate an input HTML element
+	 * @param  string  $context    Name of the form
+	 * @param  integer $ttl        Seconds before expire
 	 * @param  integer $max_hashes Clear old context hashes if more than this number
-	 * @return integer             html input element code as a string
+	 * @return integer             HTML input element code as a string
 	 */
-	public function input ($context='', $time2Live=-1, $max_hashes=5) {
+	public function input($context = '', $ttl = -1, $max_hashes = 5) {
 		// Generate hash
-		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
-		// Generate html input string
-		return '<input type="hidden" name="' . htmlspecialchars($this->inputName) . '" value="' . htmlspecialchars($hash->get()) . '"/>';
+		$hash = $this->generateHash($context, $ttl, $max_hashes);
+		// Generate HTML input string
+		return '<input type="hidden"' .
+			' name="' . htmlspecialchars($this->inputName) . '"' .
+			' value="' . htmlspecialchars($hash->get()) . '"' .
+			'/>';
 	}
 
 	/**
-	 * Generate a script html element with the hash variable
-	 * @param  string  $context    Name of the form
-	 * @param  string  $name       The name for the variable
-	 * @param  integer $time2Live  Seconds before expire
-	 * @param  integer $max_hashes Clear old context hashes if more than this number
-	 * @return integer             html script element code as a string
+	 * Generate a script HTML element with the hash variable
+	 * @param  string  $context     Name of the form
+	 * @param  string  $name        The name for the variable
+	 * @param  string  $declaration Javascript variable declaration keyword
+	 * @param  integer $ttl         Seconds before expire
+	 * @param  integer $max_hashes  Clear old context hashes if more than this number
+	 * @return integer              HTML script element code as a string
 	 */
-	public function script ($context='', $name='', $declaration='var', $time2Live=-1, $max_hashes=5) {
+	public function script($context = '', $name = '', $declaration = 'var', $ttl = -1, $max_hashes = 5) {
 		// Generate hash
-		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
+		$hash = $this->generateHash($context, $ttl, $max_hashes);
 		// Variable name
 		if (strlen($name) === 0) {
 			$name = $this->inputName;
 		}
-		// Generate html input string
-		return '<script type="text/javascript">' . $declaration . ' ' . $name . ' = ' . json_encode($hash->get()) . ';</script>';
+		// Generate HTML input string
+		return '<script type="text/javascript">' .
+			$declaration . ' ' . $name . ' = ' . json_encode($hash->get()) . ';' .
+			'</script>';
 	}
 
 	/**
 	 * Generate a javascript variable with the hash
-	 * @param  string  $context    Name of the form
-	 * @param  string  $name       The name for the variable
-	 * @param  integer $time2Live  Seconds before expire
-	 * @param  integer $max_hashes Clear old context hashes if more than this number
-	 * @return integer             html script element code as a string
+	 * @param  string  $context     Name of the form
+	 * @param  string  $name        The name for the variable
+	 * @param  string  $declaration Javascript variable declaration keyword
+	 * @param  integer $ttl         Seconds before expire
+	 * @param  integer $max_hashes  Clear old context hashes if more than this number
+	 * @return integer              HTML script element code as a string
 	 */
-	public function javascript ($context='', $name='', $declaration='var', $time2Live=-1, $max_hashes=5) {
+	public function javascript($context = '', $name = '', $declaration = 'var', $ttl = -1, $max_hashes = 5) {
 		// Generate hash
-		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
+		$hash = $this->generateHash($context, $ttl, $max_hashes);
 		// Variable name
 		if (strlen($name) === 0) {
 			$name = $this->inputName;
 		}
-		// Generate html input string
+		// Generate HTML input string
 		return $declaration . ' ' . $name . ' = ' . json_encode($hash->get()) . ';';
 	}
 
 	/**
 	 * Generate a string hash
 	 * @param  string  $context    Name of the form
-	 * @param  integer $time2Live  Seconds before expire
+	 * @param  integer $ttl        Seconds before expire
 	 * @param  integer $max_hashes Clear old context hashes if more than this number
 	 * @return integer             hash as a string
 	 */
-	public function string ($context='', $time2Live=-1, $max_hashes=5) {
+	public function string($context = '', $ttl = -1, $max_hashes = 5) {
 		// Generate hash
-		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
-		// Generate html input string
+		$hash = $this->generateHash($context, $ttl, $max_hashes);
+		// Generate HTML input string
 		return $hash->get();
 	}
 
 	/**
 	 * Validate by context
 	 * @param  string $context Name of the form
+	 * @param  string $hash    The hash to validate
 	 * @return boolean         Valid or not
 	 */
-	public function validate ($context='', $hash = null) {
+	public function validate($context = '', $hash = null) {
 		// If hash was not given, find hash
 		if (is_null($hash)) {
 			if (isset($_POST[$this->inputName])) {
 				$hash = $_POST[$this->inputName];
-			}
-			else if (isset($_GET[$this->inputName])) {
+			} elseif (isset($_GET[$this->inputName])) {
 				$hash = $_GET[$this->inputName];
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
@@ -233,7 +242,7 @@ class CSRF {
 	/**
 	 * Load hash list
 	 */
-	private function _load () {
+	private function load() {
 		$this->hashes = array();
 		// If there are hashes on the session
 		if (isset($_SESSION[$this->name])) {
@@ -248,7 +257,7 @@ class CSRF {
 				array_unshift($this->hashes, $session_hashes[$i]);
 			}
 			if (count($this->hashes) != count($session_hashes)) {
-				$this->_save();
+				$this->save();
 			}
 		}
 	}
@@ -256,52 +265,52 @@ class CSRF {
 	/**
 	 * Save hash list
 	 */
-	private function _save () {
+	private function save() {
 		$_SESSION[$this->name] = serialize($this->hashes);
 	}
 }
 
-class CSRF_Hash {
+class CSRFHash {
 
 	private $hash;
 	private $context;
 	private $expire;
 
 	/**
-	 * [__construct description]
-	 * @param string  $context   [description]
-	 * @param integer $time2Live Number of seconds before expiration
+	 * Initialize a CSRF Hash instance
+	 * @param string  $context  The group this hash belongs too
+	 * @param integer $ttl      Number of seconds before expiration
+	 * @param integer $hashSize The size of the hash to generate
 	 */
-	function __construct($context, $time2Live=0, $hashSize=64) {
+	public function __construct($context, $ttl = 0, $hashSize = 64) {
 		// Save context name
 		$this->context = $context;
 
 		// Generate hash
-		$this->hash = $this->_generateHash($hashSize);
+		$this->hash = $this->generateHash($hashSize);
 
 		// Set expiration time
-		if ($time2Live > 0) {
-			$this->expire = time() + $time2Live;
-		}
-		else {
+		if ($ttl > 0) {
+			$this->expire = time() + $ttl;
+		} else {
 			$this->expire = 0;
 		}
 	}
 
 	/**
 	 * The hash function to use
-	 * @param  int $n 	Size in bytes
-	 * @return string 	The generated hash
+	 * @param  int $n Size in bytes
+	 * @return string The generated hash
 	 */
-	private function _generateHash ($n) {
-		return bin2hex(openssl_random_pseudo_bytes($n/2));
+	private function generateHash($n) {
+		return bin2hex(openssl_random_pseudo_bytes($n / 2));
 	}
 
 	/**
 	 * Check if hash has expired
 	 * @return boolean
 	 */
-	public function hasExpire () {
+	public function hasExpire() {
 		if ($this->expire === 0 || $this->expire > time()) {
 			return false;
 		}
@@ -310,9 +319,11 @@ class CSRF_Hash {
 
 	/**
 	 * Verify hash
+	 * @param  string $hash The hash to verify
+	 * @param  string $context The context of the hash
 	 * @return boolean
 	 */
-	public function verify ($hash, $context='') {
+	public function verify($hash, $context = '') {
 		if (strcmp($context, $this->context) === 0 && !$this->hasExpire() && strcmp($hash, $this->hash) === 0) {
 			return true;
 		}
@@ -321,9 +332,10 @@ class CSRF_Hash {
 
 	/**
 	 * Check Context
+	 * @param  string $context The context to check if hash is in
 	 * @return boolean
 	 */
-	public function inContext ($context='') {
+	public function inContext($context = '') {
 		if (strcmp($context, $this->context) === 0) {
 			return true;
 		}
@@ -334,7 +346,7 @@ class CSRF_Hash {
 	 * Get hash
 	 * @return string
 	 */
-	public function get () {
+	public function get() {
 		return $this->hash;
 	}
 }
