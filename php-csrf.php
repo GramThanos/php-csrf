@@ -145,7 +145,7 @@ class CSRF {
 		// Generate hash
 		$hash = $this->generateHash ($context, $time2Live, $max_hashes);
 		// Generate html input string
-		return '<input type="hidden" name="' . htmlspecialchars($this->inputName) . '" value="' . htmlspecialchars($hash->get()) . '"/>';
+		return '<input type="hidden" name="' . htmlspecialchars($this->inputName) . '" id="' . htmlspecialchars($this->inputName) . '" value="' . htmlspecialchars($hash->get()) . '"/>';
 	}
 
 	/**
