@@ -313,7 +313,7 @@ class CSRF_Hash {
 	 * @return boolean
 	 */
 	public function verify ($hash, $context='') {
-		if (strcmp($context, $this->context) === 0 && !$this->hasExpire() && strcmp($hash, $this->hash) === 0) {
+		if (strcmp($context, $this->context) === 0 && !$this->hasExpire() && hash_equals($hash, $this->hash)) {
 			return true;
 		}
 		return false;
