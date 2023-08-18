@@ -1,5 +1,5 @@
-![latest release](https://img.shields.io/badge/Version-1.0.3-green.svg?style=flat-square)
-![latest release](https://img.shields.io/badge/PHP->=5.3.0-blue.svg?style=flat-square)
+![latest release](https://img.shields.io/badge/Version-1.0.4-green.svg?style=flat-square)
+![latest release](https://img.shields.io/badge/PHP->=5.6.0-blue.svg?style=flat-square)
 ![latest release](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)
 
 # PHP-CSRF
@@ -154,13 +154,22 @@ By using relative big hash sizes, relative short hash expiration times and small
 
 ___
 
+### Compatibility
+Compatible with PHP 5 >= 5.6.0, PHP 7, PHP 8
+
+- [hash_equals](https://www.php.net/manual/en/function.hash-equals.php) (PHP 5 >= 5.6.0, PHP 7, PHP 8)
+- [openssl_random_pseudo_bytes](https://www.php.net/manual/en/function.openssl-random-pseudo-bytes) (PHP 5 >= 5.3.0, PHP 7, PHP 8)
+- [json_encode](https://www.php.net/manual/en/function.json-encode) (PHP 5 >= 5.2.0, PHP 7, PHP 8, PECL json >= 1.2.0)
+
+___
+
 
 ### License
 
 This project is under [The MIT license](https://opensource.org/licenses/MIT).
 I do although appreciate attribute.
 
-Copyright (c) 2020 Grammatopoulos Athanasios Vasileios
+Copyright (c) 2023 Grammatopoulos Athanasios Vasileios
 
 ___
 
