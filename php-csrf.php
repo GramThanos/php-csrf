@@ -1,6 +1,6 @@
 <?php
 /**
- * php-csrf v1.0.3
+ * php-csrf v1.0.4
  * 
  * Single PHP library file for protection over Cross-Site Request Forgery
  * Easily generate and manage CSRF tokens in groups.
@@ -8,7 +8,7 @@
  * 
  * MIT License
  *
- * Copyright (c) 2019-2023 Grammatopoulos Athanasios-Vasileios
+ * Copyright (c) 2019-2023 Grammatopoulos Athanasios-Vasileios NaysKutzu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
